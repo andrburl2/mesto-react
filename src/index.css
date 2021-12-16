@@ -1,13 +1,37 @@
+@import url(fonts/fonts.css);
+
 body {
+  width: 100%;
+  min-height: 100vh;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  padding: 0 0 100px;
+  font-family: 'Inter';
+  background-color: #000;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.section {
+  width: calc(100% - 200px);
+  margin: auto;
+}
+
+.button {
+  width: 150px;
+  height: 50px;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+  font-size: 30px;
+  display: block;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 1200px) {
+  .section {
+    width: 90%;
+  }
 }

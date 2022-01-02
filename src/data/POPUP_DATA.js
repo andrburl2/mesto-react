@@ -27,17 +27,6 @@ const popupData = {
       </>
     ),
   },
-  avatarPopup: {
-    name: 'avatar',
-    title: 'Обновить аватар',
-    children: (
-      <>
-        <input className='popup__input' aria-label='Ссылка на аватар' name='avatar' required type='url' placeholder='Ссылка на аватар' />
-        <p className='popup__error popup__error_avatar'></p>
-        <button className='button popup__button popup__button_type_save' type='submit' disabled>Сохранить</button>
-      </>
-    ),
-  },
 };
 
 export default popupData;

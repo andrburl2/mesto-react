@@ -1,22 +1,37 @@
+import { React, PureComponent } from 'react';
+
 import Profile from '../Profile/Profile';
 import Card from '../Card/Card';
 
-function Main(props) {
-  return (
-    <main>
-      <Profile
-        onOpenPopup={props.onOpenPopup}
-      />
+class Main extends PureComponent {
+  render() {
+    const { cards, onOpenEditPopup, onOpenAddPopup, onCardClick, onCardLike, onCardDelete } = this.props;
 
-      <div className='card__container section'>
-        {props.cards.map(el => {
-          return <Card card={el} onCardClick={props.onCardClick} key={el.name}/>
-        })}
-      </div>
-
-      
-    </main>
-  )
-}
+    return (
+      <main>
+        <Profile
+          onOpenEditPopup={onOpenEditPopup}
+          onOpenAddPopup={onOpenAddPopup}
+        />
+  
+        <div className='card__container section'>
+          {/* Перебираем массив и создаем карточку за каждый элемент */}
+          
+          {cards.map(el => {
+            return (
+              <Card
+                card={el}
+                key={el._id}
+                onCardClick={onCardClick}
+                onCardLike={onCardLike}
+                onCardDelete={onCardDelete}
+              />
+            )
+          })}
+        </div>
+      </main>
+    )
+  }
+};
 
 export default Main;

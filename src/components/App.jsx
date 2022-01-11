@@ -1,12 +1,8 @@
 import { React, PureComponent } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Header from './Header/Header';
 import Main from './Main/Main';
-
-import EditProfilePopup from './Popups/EditProfilePopup';
-import AddPlacePopup from './Popups/AddPlacePopup';
-import ImagePopup from './ImagePopup/ImagePopup';
 import Join from './Join/Join';
 
 import { api } from '../utils/api';
@@ -17,96 +13,27 @@ class App extends PureComponent {
     super(props)
 
     this.state = {
-      isEditProfilePopupOpen: false,
-      isAddPlacePopupOpen: false,
-      selectedCard: {
-        link: '',
-        name: '',
-      },
-      currentUser: {},
-      cards: [],
+      currentUser: undefined,
     }
   }
 
-  onOpenEditPopup = () => {
-    this.setState({
-      isEditProfilePopupOpen: true
-    })
-  }
-
-  onOpenAddPopup = () => {
-    this.setState({
-      isAddPlacePopupOpen: true
-    })
-  }
-
-  closeAllPopups = () => {
-    this.setState({
-      isEditProfilePopupOpen: false,
-      isAddPlacePopupOpen: false,
-      selectedCard: {
-        link: '',
-        name: '',
-      },
-    })
-  }
-
-  onCardClick = (e) => {
-    this.setState({
-      selectedCard: {
-        link: e.target.src,
-        name: e.target.alt,
-      },
-    });
-  }
-
-  getProfile = () => {
+  getUserProfile = () => {
     api.getProfile()
-      .then(data => this.setState({ currentUser: data }));
-  }
-
-  handleCardLike = (card) => {
-    const isLiked = card.likes.some(el => el === this.state.currentUser._id);
-
-    api.changeLikeCardStatus(card._id, isLiked).then(newCard => {
-      const newCards = this.state.cards.map(el => el._id === newCard.card._id ? newCard.card : el)
-
-      this.setState({ cards: newCards });
-    });
-  }
-
-  handleCardDelete = (id) => {
-    api.deleteCard(id).then(() => {
-      const newCards = this.state.cards.filter(el => el._id !== id)
-
-      this.setState({ cards: newCards });
-    });
-  }
-
-  handleUpdateUser = (name, about, avatar) => {
-    api.updateProfile(name, about, avatar)
       .then(data => {
-        this.setState({ currentUser: data.user });
-        this.closeAllPopups();
+        if (data.status === 200) {
+          this.setState({ currentUser: data.user })
+        }
       });
   }
 
-  handleAddCard = (title, link) => {
-    api.addCard(title, link)
-      .then(res => {
-        this.setState({ cards: [...this.state.cards, res.card] });
-
-        this.closeAllPopups();
-      })
+  logout = () => {
+    api.logout()
+      .then(() => this.setState({ currentUser: undefined }));
   }
 
   componentDidMount() {
-    this.getProfile();
-
-    api.getCards()
-      .then(data => this.setState({ cards: data.cards }));
+    this.getUserProfile();
   }
-  
 
   render() {
     return (
@@ -118,31 +45,12 @@ class App extends PureComponent {
             path='/'
             exact
             element=
-            {
-              <>
-                <Main
-                  onOpenEditPopup={this.onOpenEditPopup}
-                  onOpenAddPopup={this.onOpenAddPopup}
-                  onCardClick={this.onCardClick}
-                  onCardLike={this.handleCardLike}
-                  onCardDelete={this.handleCardDelete}
-                  cards={this.state.cards}
-                />
+            { this.state.currentUser === undefined ? <Navigate replace to='/join' /> : <Main updateProfile={this.getUserProfile} onLogout={this.logout} /> }  
+          ></Route>
 
-                
-                
-
-                <EditProfilePopup isOpen={this.state.isEditProfilePopupOpen} onClose={this.closeAllPopups} onUpdateUser={this.handleUpdateUser} />
-                <AddPlacePopup isOpen={this.state.isAddPlacePopupOpen} onClose={this.closeAllPopups} onAddCard={this.handleAddCard} />
-
-                <ImagePopup card={this.state.selectedCard} onClose={this.closeAllPopups} />
-              </>
-            }  
-          >
-          </Route>
           <Route
             path='/join'
-            element={<Join />}
+            element={ this.state.currentUser === undefined ? <Join updateProfile={this.getUserProfile} /> : <Navigate replace to='/' /> }
           ></Route>
         </Routes>
       </CurrentUserContext.Provider>

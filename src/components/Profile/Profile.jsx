@@ -7,7 +7,7 @@ class Profile extends PureComponent {
   static contextType = CurrentUserContext;
   
   render() {
-    const { onOpenEditPopup, onOpenAddPopup} = this.props;
+    const { onOpenEditPopup, onOpenAddPopup, onLogout } = this.props;
 
     return (
       <div className='profile section'>
@@ -18,7 +18,11 @@ class Profile extends PureComponent {
           <p className='profile__job'>{this.context.about}</p>
         </div>
 
-        <button className='button profile__button_type_edit' title='Редактировать профиль' onClick={onOpenEditPopup}></button>
+        <div className="profile__button-row">
+          <button className='button profile__button profile__button_type_edit' title='Редактировать профиль' onClick={onOpenEditPopup}></button>
+          <button className='button profile__button profile__button_type_logout' title='Выйти из аккаунта' onClick={onLogout}></button>
+        </div>
+
         <button className='button profile__button_type_add' title='Добавить новую карточку' onClick={onOpenAddPopup}>+</button>
       </div>
     )

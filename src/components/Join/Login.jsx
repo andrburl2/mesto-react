@@ -1,5 +1,6 @@
 import { React, PureComponent } from 'react';
 
+import validate from '../../utils/validation';
 import { api } from '../../utils/api';
 
 class Login extends PureComponent {
@@ -9,6 +10,12 @@ class Login extends PureComponent {
     this.state = {
       email: '',
       password: '',
+      errors: {
+        email: '',
+        password: '',
+      },
+      isFormValid: false,
+      message: '',
     }
   }
 
@@ -16,17 +23,26 @@ class Login extends PureComponent {
     e.preventDefault();
 
     api.login(this.state.email, this.state.password)
-      .then(data => console.log(data));
+      .then(data => {
+        if (data.status !== 200) {
+          this.setState({ message: data.message });
+          return
+        }
 
-    this.setState({
-      email: '',
-      password: '',
-    });
+        this.props.updateProfile();
+      });
   }
 
   handleChange = (e) => {
+    const validity = validate(e.target);
+    const errors = this.state.errors;
+    errors[e.target.name] = validity.error;
+
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
+      errors: errors,
+      isFormValid: validity.isFormValid,
+      message: '',
     })
   }
   
@@ -39,20 +55,33 @@ class Login extends PureComponent {
             name='email'
             value={this.state.email}
             onChange={this.handleChange}
-            placeholder='Email'
+            required
             type='email'
+            placeholder='Email'
           ></input>
+          <p className='join__error'>{this.state.errors.email}</p>
 
           <input
             className='input join__input'
             name='password'
             value={this.state.password}
             onChange={this.handleChange}
-            placeholder='Пароль'
+            required
             type='password'
+            minLength='8'
+            placeholder='Пароль'
           ></input>
+          <p className='join__error'>{this.state.errors.password}</p>
 
-          <button className='button join__button' type='submit'>Войти</button>
+          <p className='join__message'>{this.state.message}</p>
+
+          <button
+            className={`button join__button ${this.state.isFormValid ? 'join__button_active' : ''}`}
+            type='submit'
+            disabled={!this.state.isFormValid}
+          >
+            Войти
+          </button>
         </form>
       </div>
     );

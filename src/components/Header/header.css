@@ -12,3 +12,9 @@
   height: 40px;
   object-fit: contain;
 }
+
+@media screen and (max-width: 425px) {
+  .header {
+    margin-bottom: 30px;
+  }
+}

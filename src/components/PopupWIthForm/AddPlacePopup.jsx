@@ -23,19 +23,24 @@ class AddPlacePopup extends PureComponent {
   submitForm = (e) => {
     e.preventDefault();
 
+    this.props.toggleLoader();
     api.addCard(this.state.title, this.state.link)
       .then(data => {
+        // если ответ пришел с 201 статусом, то вызовется функция добавления карточки и закроется попап
         if (data.status === 201) {
           this.props.addNewCard(data.card);
           this.closePopup();
           return
         }
 
-        this.setState({ message: data.message });
-      });
+        // иначе выведется сообщение
+        this.setState({ message: data.message, isFormValid: false, });
+      })
+      .finally(() => this.props.toggleLoader());
   }
 
   closePopup = () => {
+    // вызывается функция закрытия попап из пропсов и очищаются все значения
     this.props.onClose();
 
     this.setState({
@@ -51,10 +56,14 @@ class AddPlacePopup extends PureComponent {
   }
   
   handleChange = (e) => {
+    /* создается копия ошибок из стейта, затем в зависимости от имени input
+    свойство this.state.errors с тем же именем получает текст ошибки */
     const validity = validate(e.target);
     const errors = this.state.errors;
     errors[e.target.name] = validity.error;
 
+    /* при вводе символа записывается значение поля, обновляются ошибки,
+    валидность всей формы для включения кнопки и очищается сообщение с сервера */
     this.setState({
       [e.target.name]: e.target.value,
       errors: errors,
@@ -64,7 +73,7 @@ class AddPlacePopup extends PureComponent {
   }
 
   render() {
-    const { isOpen } = this.props;
+    const { isOpen, children, isLoading } = this.props;
 
     return (
       <div className={ `popup ${isOpen ? 'popup_is-opened' : ''}` }>
@@ -99,15 +108,19 @@ class AddPlacePopup extends PureComponent {
             />
             <p className='popup__error'>{this.state.errors.link}</p>
 
+            { /* параграф для ответа с сервера */ }
             <p className='popup__message'>{this.state.message}</p>
 
             <button
-              className={`button popup__button ${this.state.isFormValid ? 'popup__button_active' : ''}`}
+              className={`button popup__button ${this.state.isFormValid ? 'popup__button_active' : ''} ${isLoading ? 'hidden' : ''}`}
               type='submit'
               disabled={!this.state.isFormValid}
             >
               Добавить
             </button>
+
+            { /* место лоадера */ }
+            {children}
           </form>
         </div>
       </div>

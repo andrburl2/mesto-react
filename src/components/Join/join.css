@@ -48,6 +48,7 @@
   box-sizing: border-box;
 }
 
+/* При нажатии на checkbox рамка перемещается на другой заголовок */
 .join__checkbox:checked + .join__label::after {
   transform: translateX(88px);
   width: 150px;
@@ -58,27 +59,29 @@
   margin: 0;
   font-size: 20px;
   line-height: 1;
-  z-index: 10;
   color: #000;
-  transition: 1ms linear .5s;
 }
 
 .join__text-label:last-of-type {
   width: 130px;
 }
 
+/* контейнер для форм, transform-style дает объемность формам */
 .join__3d-wrapper {
   width: 100%;
   height: 450px;
-  position: relative;
+  display: flex;
   transform-style: preserve-3d;
-  transition: 1.5s cubic-bezier(.1, .25, .4, 1.6); 
+  transition: 1.5s cubic-bezier(.1, .25, .4, 1.6);
 }
 
+/* При нажатии на checkbox переворачивает форму */
 .join__checkbox:checked ~ .join__3d-wrapper {
   transform: rotateY(180deg);
 }
 
+
+/* абсолютное позиционирование для того, чтобы формы располагались спина к спине */
 .join__block {
   width: 100%;
   height: 100%;
@@ -89,13 +92,13 @@
   background-color: #fff;
   border-radius: 10px;
   transform-style: preserve-3d;
-  backface-visibility: hidden;
 }
 
 .join__block_position_back {
   transform: rotateY(180deg);
 }
 
+/* transform дает объемность, box-sizing и padding для правильного отображения */
 .join__form {
   width: 100%;
   padding: 0 40px;
@@ -113,10 +116,6 @@
 
 .join__input::placeholder {
   color: rgba(0, 0, 0, .5);
-}
-
-.join__input:valid {
-  border-bottom: 2px solid #4cbb17;
 }
 
 .join__error {
@@ -162,4 +161,22 @@
   outline: none;
   background-color: #000;
   color: #fff;
+}
+
+@media screen and (max-width: 768px) {
+  .join__title {
+    margin: 0 0 20px;
+    font-size: 30px;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .join__title {
+    margin: 0 0 20px;
+    font-size: 25px;
+  }
+
+  .join__form {
+    padding: 0 25px;
+  }
 }

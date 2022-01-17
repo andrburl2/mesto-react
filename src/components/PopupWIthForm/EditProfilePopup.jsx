@@ -29,19 +29,24 @@ class EditProfilePopup extends PureComponent {
   submitForm = (e) => {
     e.preventDefault();
 
+    this.props.toggleLoader();
     api.updateProfile(this.state.name, this.state.about, this.state.avatar)
       .then(data => {
+        // если ответ пришел с 200 статусом, то заново запросится профиль пользователя с сервера и закроется попап
         if (data.status === 200) {
-          this.props.updateProfile();
+          this.props.getUserProfile();
           this.closePopup();
           return
         }
 
-        this.setState({ message: data.message });
-      });
+        // иначе выведется сообщение
+        this.setState({ message: data.message, isFormValid: false, });
+      })
+      .finally(() => this.props.toggleLoader());
   }
 
   closePopup = () => {
+    // вызывается функция закрытия попап из пропсов и очищаются все значения
     this.props.onClose();
     
     this.setState({
@@ -56,10 +61,14 @@ class EditProfilePopup extends PureComponent {
   }
   
   handleChange = (e) => {
+    /* создается копия ошибок из стейта, затем в зависимости от имени input
+    свойство this.state.errors с тем же именем получает текст ошибки */
     const validity = validate(e.target);
     const errors = this.state.errors;
     errors[e.target.name] = validity.error;
 
+    /* при вводе символа записывается значение поля, обновляются ошибки,
+    валидность всей формы для включения кнопки и очищается сообщение с сервера */
     this.setState({
       [e.target.name]: e.target.value,
       errors: errors,
@@ -69,7 +78,9 @@ class EditProfilePopup extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (!(prevProps === this.props)) {
+    /* при открытии попапа пропсы берутся из данных пользователя,
+    сравнение нужно, чтобы функция не срабатывала при каждом изменении стейта*/
+    if (!(prevProps.isOpen === this.props.isOpen)) {
       this.setState({
         name: this.context.name,
         about: this.context.about,
@@ -79,7 +90,7 @@ class EditProfilePopup extends PureComponent {
   }
 
   render() {
-    const { isOpen } = this.props;
+    const { isOpen, children, isLoading } = this.props;
 
     return (
       <div className={ `popup ${isOpen ? 'popup_is-opened' : ''}` }>
@@ -127,15 +138,19 @@ class EditProfilePopup extends PureComponent {
             />
             <p className='popup__error'>{this.state.errors.avatar}</p>
 
+            { /* параграф для ответа с сервера */ }
             <p className='popup__message'>{this.state.message}</p>
 
             <button
-              className={`button popup__button ${this.state.isFormValid ? 'popup__button_active' : ''}`}
+              className={`button popup__button ${this.state.isFormValid ? 'popup__button_active' : ''} ${isLoading ? 'hidden' : ''}`}
               type='submit'
               disabled={!this.state.isFormValid}
             >
               Сохранить
             </button>
+
+            {/* место лоадера */}
+            {children}
           </form>
         </div>
       </div>

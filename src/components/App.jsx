@@ -44,13 +44,12 @@ class App extends PureComponent {
           <Route 
             path='/'
             exact
-            element=
-            { this.state.currentUser === undefined ? <Navigate replace to='/join' /> : <Main updateProfile={this.getUserProfile} onLogout={this.logout} /> }  
+            element={ this.state.currentUser === undefined ? <Navigate replace to='/join' /> : <Main getUserProfile={this.getUserProfile} onLogout={this.logout} /> }  
           ></Route>
 
           <Route
             path='/join'
-            element={ this.state.currentUser === undefined ? <Join updateProfile={this.getUserProfile} /> : <Navigate replace to='/' /> }
+            element={ this.state.currentUser === undefined ? <Join getUserProfile={this.getUserProfile} /> : <Navigate replace to='/' /> }
           ></Route>
         </Routes>
       </CurrentUserContext.Provider>

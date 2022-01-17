@@ -1,6 +1,6 @@
 import { React, PureComponent} from 'react';
-
 import './profile.css';
+
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
 class Profile extends PureComponent {

@@ -2,12 +2,16 @@ import { React, PureComponent } from 'react';
 
 import Profile from '../Profile/Profile';
 import Card from '../Card/Card';
-import EditProfilePopup from '../Popups/EditProfilePopup';
-import AddPlacePopup from '../Popups/AddPlacePopup';
+import EditProfilePopup from '../PopupWIthForm/EditProfilePopup';
+import AddPlacePopup from '../PopupWIthForm/AddPlacePopup';
 import ImagePopup from '../ImagePopup/ImagePopup';
+import WithLoader from '../Loader/Loader';
 
 import { api } from '../../utils/api';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+
+const AddPlacePopupWithLoader = WithLoader(AddPlacePopup);
+const EditProfilePopupWithLoader = WithLoader(EditProfilePopup);
 
 class Main extends PureComponent {
   constructor(props) {
@@ -49,6 +53,13 @@ class Main extends PureComponent {
     });
   }
 
+  escClosePopup = (e) => {
+    // закрытие попапов на esc
+    if (e.keyCode === 27) {
+      this.closeAllPopups();
+    }
+  }
+
   handleCardClick = (e) => {
     this.setState({
       selectedCard: {
@@ -59,9 +70,12 @@ class Main extends PureComponent {
   }
 
   handleCardLike = (card) => {
+    // проверяем есть ли id текущего пользователя в массив лайков и записываем, как boolean
     const isLiked = card.likes.some(el => el === this.context._id);
 
+    // передаем его функции вторым аргументов
     api.changeLikeCardStatus(card._id, isLiked).then(newCard => {
+      // создается новый массив, в котором старая карточка меняется на новую, без лайка
       const newCards = this.state.cards.map(el => el._id === newCard.card._id ? newCard.card : el)
 
       this.setState({ cards: newCards });
@@ -70,6 +84,7 @@ class Main extends PureComponent {
 
   handleCardDelete = (id) => {
     api.deleteCard(id).then(() => {
+      // создается новый массив, без удаленной карточки
       const newCards = this.state.cards.filter(el => el._id !== id)
 
       this.setState({ cards: newCards });
@@ -84,16 +99,22 @@ class Main extends PureComponent {
     api.getCards()
       .then(data => this.setState({ cards: data.cards }));
   }
-
+  
   componentDidMount() {
     this.getCards();
+    document.addEventListener('keydown', this.escClosePopup);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escClosePopup);
   }
 
   render() {
-    const { onLogout, updateProfile } = this.props;
+    const { onLogout, getUserProfile, } = this.props;
 
     return (
       <main>
+        {/* передаем функции открытия попапов и выхода из профиля */}
         <Profile
           onOpenEditPopup={this.onOpenEditPopup}
           onOpenAddPopup={this.onOpenAddPopup}
@@ -116,8 +137,10 @@ class Main extends PureComponent {
           })}
         </div>
 
-        <EditProfilePopup isOpen={this.state.isEditProfilePopupOpen} onClose={this.closeAllPopups} updateProfile={updateProfile} />
-        <AddPlacePopup isOpen={this.state.isAddPlacePopupOpen} onClose={this.closeAllPopups} addNewCard={this.addNewCard} />
+        {/* передаем в попапы свойство, отвечающее за открытие, функцию для их закрытия,
+        функции для обноления профиля и создания новой карточки */}
+        <EditProfilePopupWithLoader isOpen={this.state.isEditProfilePopupOpen} onClose={this.closeAllPopups} getUserProfile={getUserProfile} />
+        <AddPlacePopupWithLoader isOpen={this.state.isAddPlacePopupOpen} onClose={this.closeAllPopups} addNewCard={this.addNewCard} />
 
         <ImagePopup card={this.state.selectedCard} onClose={this.closeAllPopups} />
       </main>

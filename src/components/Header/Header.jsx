@@ -1,7 +1,7 @@
 import { React, PureComponent } from 'react';
+import './header.css';
 
 import logo from '../../images/logo.svg';
-import './header.css';
 
 class Header extends PureComponent {
   render() {

@@ -1,0 +1,70 @@
+.confirm {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, .85);
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+.confirm.confirm__is-openned {
+  display: flex;
+}
+
+.confirm__content {
+  max-width: 430px;
+  width: 100%;
+  padding: 35px;
+  background: #fff;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.confirm__title {
+  margin: 0 0 20px;
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.confirm__button-row {
+  width: 100%;
+  margin: auto 0 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.confirm__button {
+  width: 45%;
+  font-size: 20px;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  transition: .3s linear;
+}
+
+.confirm__button_type_cancel {
+  border: 2px solid #000;
+  color: #000;
+}
+
+.confirm__button_type_cancel:hover {
+  background: #000;
+  color: #fff;
+}
+
+.confirm__button_type_confirm {
+  background-color: #ed5e68;
+  color: #fff;
+}
+
+.confirm__button_type_confirm:hover {
+  background-color: #ff0000;
+}

@@ -1,4 +1,4 @@
-import { React, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import './popupWithForm.css';
 
 import { api } from '../../utils/api';
@@ -61,14 +61,14 @@ class EditProfilePopup extends PureComponent {
   }
   
   handleChange = (e) => {
-    /* создается копия ошибок из стейта, затем в зависимости от имени input
-    свойство this.state.errors с тем же именем получает текст ошибки */
+    // создается копия ошибок из стейта, затем в зависимости от имени input
+    // свойство this.state.errors с тем же именем получает текст ошибки
     const validity = validate(e.target);
     const errors = this.state.errors;
     errors[e.target.name] = validity.error;
 
-    /* при вводе символа записывается значение поля, обновляются ошибки,
-    валидность всей формы для включения кнопки и очищается сообщение с сервера */
+    // при вводе символа записывается значение поля, обновляются ошибки,
+    // валидность всей формы для включения кнопки и очищается сообщение с сервера
     this.setState({
       [e.target.name]: e.target.value,
       errors: errors,
@@ -78,8 +78,8 @@ class EditProfilePopup extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    /* при открытии попапа пропсы берутся из данных пользователя,
-    сравнение нужно, чтобы функция не срабатывала при каждом изменении стейта*/
+    // при обновлении сравнивает старые и новые пропсы,
+    // чтобы не рендерить popup заново при каждом изменении стейта
     if (!(prevProps.isOpen === this.props.isOpen)) {
       this.setState({
         name: this.context.name,

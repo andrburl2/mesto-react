@@ -1,4 +1,4 @@
-import { React, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import './join.css';
 
 import Login from './Login';

@@ -1,4 +1,4 @@
-import { React, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Header from './Header/Header';
@@ -44,7 +44,7 @@ class App extends PureComponent {
           <Route 
             path='/'
             exact
-            element={ this.state.currentUser === undefined ? <Navigate replace to='/join' /> : <Main getUserProfile={this.getUserProfile} onLogout={this.logout} /> }  
+            element={ this.state.currentUser === undefined ? <Navigate replace to='/join' /> : <Main getUserProfile={this.getUserProfile} logout={this.logout} /> }  
           ></Route>
 
           <Route

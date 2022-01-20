@@ -1,4 +1,4 @@
-import { React, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 
 import { api } from '../../utils/api';
 import validate from '../../utils/validation';
@@ -54,14 +54,14 @@ class Registration extends PureComponent {
   }
 
   handleChange = (e) => {
+    // создается копия ошибок из стейта, затем в зависимости от имени input
+    // свойство this.state.errors с тем же именем получает текст ошибки
     const validity = validate(e.target);
-    /* создается копия ошибок из стейта, затем в зависимости от имени input
-    свойство this.state.errors с тем же именем получает текст ошибки */
     const errors = this.state.errors;
     errors[e.target.name] = validity.error;
 
-    /* при вводе символа записывается значение поля, обновляются ошибки,
-    валидность всей формы для включения кнопки и очищается сообщение с сервера */
+    // при вводе символа записывается значение поля, обновляются ошибки,
+    // валидность всей формы для включения кнопки и очищается сообщение с сервера
     this.setState({
       [e.target.name]: e.target.value,
       errors: errors,

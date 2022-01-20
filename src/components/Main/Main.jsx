@@ -1,26 +1,30 @@
-import { React, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 
 import Profile from '../Profile/Profile';
 import Card from '../Card/Card';
 import EditProfilePopup from '../PopupWIthForm/EditProfilePopup';
-import AddPlacePopup from '../PopupWIthForm/AddPlacePopup';
+import AddCardPopup from '../PopupWIthForm/AddCardPopup';
 import ImagePopup from '../ImagePopup/ImagePopup';
 import WithLoader from '../Loader/Loader';
+import ConfirmPopup from '../ConfirmPopup/ConfirmPopup';
 
 import { api } from '../../utils/api';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
-const AddPlacePopupWithLoader = WithLoader(AddPlacePopup);
+const AddCardPopupWithLoader = WithLoader(AddCardPopup);
 const EditProfilePopupWithLoader = WithLoader(EditProfilePopup);
 
 class Main extends PureComponent {
   constructor(props) {
-    super(props)
+    super(props);
+
+    this.confirmRef = React.createRef();
 
     this.state = {
       cards: [],
       isEditProfilePopupOpen: false,
-      isAddPlacePopupOpen: false,
+      isAddCardPopupOpen: false,
+      confirmPopupTitle: '',
       selectedCard: {
         link: '',
         name: '',
@@ -30,22 +34,29 @@ class Main extends PureComponent {
 
   static contextType = CurrentUserContext;
 
-  onOpenEditPopup = () => {
+  openEditPopup = () => {
     this.setState({
       isEditProfilePopupOpen: true
     });
   }
 
-  onOpenAddPopup = () => {
+  openAddPopup = () => {
     this.setState({
-      isAddPlacePopupOpen: true
+      isAddCardPopupOpen: true
     });
+  }
+
+  openConfirmPopup = (title) => {
+    this.setState({ confirmPopupTitle: title });    // передаем текст заголовка, что открывает попап
+
+    return this.confirmRef.current.createPromise()  // через ref вызываем функцию, которая возвращает промис
   }
 
   closeAllPopups = () => {
     this.setState({
       isEditProfilePopupOpen: false,
-      isAddPlacePopupOpen: false,
+      isAddCardPopupOpen: false,
+      confirmPopupTitle: '',
       selectedCard: {
         link: '',
         name: '',
@@ -63,19 +74,19 @@ class Main extends PureComponent {
   handleCardClick = (e) => {
     this.setState({
       selectedCard: {
-        link: e.target.src,
-        name: e.target.alt,
+        link: e.target.src,  // при нажатии на картинку, записываем ее ссылку и название в стейт
+        name: e.target.alt,  // это откроет popup с нужной картинкой 
       },
     });
   }
 
   handleCardLike = (card) => {
-    // проверяем есть ли id текущего пользователя в массив лайков и записываем, как boolean
+    // проверяем есть ли id текущего пользователя в массив лайков и сохраняем, как boolean
     const isLiked = card.likes.some(el => el === this.context._id);
 
     // передаем его функции вторым аргументов
     api.changeLikeCardStatus(card._id, isLiked).then(newCard => {
-      // создается новый массив, в котором старая карточка меняется на новую, без лайка
+      // создается новый массив, в котором старая карточка меняется на новую с обновленным значением лайка
       const newCards = this.state.cards.map(el => el._id === newCard.card._id ? newCard.card : el)
 
       this.setState({ cards: newCards });
@@ -83,42 +94,57 @@ class Main extends PureComponent {
   }
 
   handleCardDelete = (id) => {
-    api.deleteCard(id).then(() => {
-      // создается новый массив, без удаленной карточки
-      const newCards = this.state.cards.filter(el => el._id !== id)
+    this.openConfirmPopup('Вы действительно хотите удалить карточку?')
+      .then(value => {
+        if (value) {
+          api.deleteCard(id).then(() => {
+            // создается новый массив, без удаленной карточки
+            const newCards = this.state.cards.filter(el => el._id !== id)
+      
+            this.setState({ cards: newCards });
+          });
+        }
+      });
+  }
 
-      this.setState({ cards: newCards });
-    });
+  handleLogout = () => {
+    this.openConfirmPopup('Вы действительно хотите выйти?')
+      .then(value => {
+        if (value) {
+          this.props.logout();
+        }
+      });
   }
 
   addNewCard = (newCard) => {
-    this.setState({ cards: [...this.state.cards, newCard] });
+    this.setState({ cards: [...this.state.cards, newCard] });    // добавляет новую карточку в стейт, передается в addCardPopup
   }
 
   getCards = () => {
     api.getCards()
-      .then(data => this.setState({ cards: data.cards }));
+      .then(data => this.setState({ cards: data.cards }));       // получаем с сервера карточки и записываем их в стейт
   }
   
   componentDidMount() {
     this.getCards();
-    document.addEventListener('keydown', this.escClosePopup);
+
+    document.addEventListener('keydown', this.escClosePopup);    // добавлем eventListener для закрытия popup на esc
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.escClosePopup);
+    document.removeEventListener('keydown', this.escClosePopup); // очищаем eventListener для закрытия popup на esc
   }
 
   render() {
-    const { onLogout, getUserProfile, } = this.props;
+    const { getUserProfile } = this.props;
 
     return (
       <main>
         {/* передаем функции открытия попапов и выхода из профиля */}
         <Profile
-          onOpenEditPopup={this.onOpenEditPopup}
-          onOpenAddPopup={this.onOpenAddPopup}
-          onLogout={onLogout}
+          onOpenEditPopup={this.openEditPopup}
+          onOpenAddPopup={this.openAddPopup}
+          onLogout={this.handleLogout}
         />
   
         <div className='card__container section'>
@@ -140,9 +166,11 @@ class Main extends PureComponent {
         {/* передаем в попапы свойство, отвечающее за открытие, функцию для их закрытия,
         функции для обноления профиля и создания новой карточки */}
         <EditProfilePopupWithLoader isOpen={this.state.isEditProfilePopupOpen} onClose={this.closeAllPopups} getUserProfile={getUserProfile} />
-        <AddPlacePopupWithLoader isOpen={this.state.isAddPlacePopupOpen} onClose={this.closeAllPopups} addNewCard={this.addNewCard} />
+        <AddCardPopupWithLoader     isOpen={this.state.isAddCardPopupOpen}     onClose={this.closeAllPopups} addNewCard={this.addNewCard}    />
 
         <ImagePopup card={this.state.selectedCard} onClose={this.closeAllPopups} />
+
+        <ConfirmPopup title={this.state.confirmPopupTitle} onClose={this.closeAllPopups} ref={this.confirmRef} />
       </main>
     )
   }

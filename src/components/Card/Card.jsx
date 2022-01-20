@@ -1,4 +1,4 @@
-import { React, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import './card.css';
 
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';

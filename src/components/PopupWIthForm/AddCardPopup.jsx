@@ -1,10 +1,10 @@
-import { React, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import './popupWithForm.css';
 
 import { api } from '../../utils/api';
 import validate from '../../utils/validation';
 
-class AddPlacePopup extends PureComponent {
+class AddCardPopup extends PureComponent {
   constructor(props) {
     super(props)
 
@@ -56,14 +56,14 @@ class AddPlacePopup extends PureComponent {
   }
   
   handleChange = (e) => {
-    /* создается копия ошибок из стейта, затем в зависимости от имени input
-    свойство this.state.errors с тем же именем получает текст ошибки */
+    // создается копия ошибок из стейта, затем в зависимости от имени input
+    // свойство this.state.errors с тем же именем получает текст ошибки
     const validity = validate(e.target);
     const errors = this.state.errors;
     errors[e.target.name] = validity.error;
 
-    /* при вводе символа записывается значение поля, обновляются ошибки,
-    валидность всей формы для включения кнопки и очищается сообщение с сервера */
+    // при вводе символа записывается значение поля, обновляются ошибки,
+    // валидность всей формы для включения кнопки и очищается сообщение с сервера
     this.setState({
       [e.target.name]: e.target.value,
       errors: errors,
@@ -81,7 +81,7 @@ class AddPlacePopup extends PureComponent {
           <button className='popup__close' onClick={this.closePopup} title='Закрыть окно'></button>
           <h3 className='popup__title'>Новое место</h3>
 
-          <form className='popup__form' name='addPlace' onSubmit={this.submitForm}>
+          <form className='popup__form' name='addCard' onSubmit={this.submitForm}>
             <input
               className='input popup__input'
               aria-label='Название'
@@ -128,4 +128,4 @@ class AddPlacePopup extends PureComponent {
   }
 }
 
-export default AddPlacePopup;
+export default AddCardPopup;

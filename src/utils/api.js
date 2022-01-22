@@ -1,5 +1,5 @@
 export const api = {
-  url: 'http://localhost:3200',
+  url: 'https://api.andrburl-mesto.ml',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',

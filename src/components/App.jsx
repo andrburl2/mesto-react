@@ -13,7 +13,7 @@ class App extends PureComponent {
     super(props)
 
     this.state = {
-      currentUser: undefined,
+      currentUser: undefined
     }
   }
 
@@ -44,12 +44,12 @@ class App extends PureComponent {
           <Route 
             path='/'
             exact
-            element={ this.state.currentUser === undefined ? <Navigate replace to='/join' /> : <Main getUserProfile={this.getUserProfile} logout={this.logout} /> }  
+            element={ this.state.currentUser === undefined ? <Navigate to='/join' replace={true} /> : <Main getUserProfile={this.getUserProfile} logout={this.logout} /> }  
           ></Route>
 
           <Route
             path='/join'
-            element={ this.state.currentUser === undefined ? <Join getUserProfile={this.getUserProfile} /> : <Navigate replace to='/' /> }
+            element={ this.state.currentUser === undefined ? <Join getUserProfile={this.getUserProfile} /> : <Navigate to='/' replace={true} /> }
           ></Route>
         </Routes>
       </CurrentUserContext.Provider>

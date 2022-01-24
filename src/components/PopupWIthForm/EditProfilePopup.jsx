@@ -78,7 +78,7 @@ class EditProfilePopup extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    // при обновлении сравнивает старые и новые пропсы,
+    // при обновлении сравнивает изменился ли пропс открытия попапа,
     // чтобы не рендерить popup заново при каждом изменении стейта
     if (!(prevProps.isOpen === this.props.isOpen)) {
       this.setState({

@@ -1,6 +1,6 @@
 {
-  "name": "react_mesto",
-  "version": "0.1.0",
+  "name": "mesto_react",
+  "version": "0.6.3",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.15.0",
@@ -8,12 +8,14 @@
     "@testing-library/user-event": "^12.8.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-router-dom": "^6.2.1",
     "react-scripts": "4.0.3",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy": "npm run build && scp -r ./build/* andrburl2@62.84.120.84:/home/andrburl2/mesto-react",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

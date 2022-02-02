@@ -1,0 +1,27 @@
+.popup-image {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, .85);
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+.popup-image.popup-image__is-openned {
+  display: flex;
+}
+
+.popup-image__content {
+  max-width: 80vw;
+  max-height: 80vh;
+  position: relative;
+}
+
+.popup-image__img {
+  max-width: 80vw;
+  max-height: 80vh;
+  border-radius: 10px;
+}

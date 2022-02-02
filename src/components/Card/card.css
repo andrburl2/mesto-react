@@ -2,8 +2,9 @@
   width: 282px;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
+  background-color: transparent;
   border-radius: 10px;
+  overflow: hidden;
 }
 
 .card__container {
@@ -25,26 +26,6 @@
   height: 282px;
   object-fit: cover;
   object-position: center;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  position: relative;
-}
-
-.card__img::after {
-  content: '';
-  display: block;
-  width: 282px;
-  height: 282px;
-  background-color: rgba(0, 0, 0, .3);
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-}
-
-.card__title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 900;
-  line-height: 28px;
 }
 
 .card__description {
@@ -53,6 +34,14 @@
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  background-color: #fff;
+}
+
+.card__title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 28px;
 }
 
 .card__like-container {
@@ -63,15 +52,14 @@
 }
 
 .card__like-icon {
-  min-width: 20px;
-  min-height: 20px;
+  width: 20px;
+  height: 20px;
   margin: 0 0 10px;
   padding: 0;
-  background: url(../../images/like-inactive.svg) center no-repeat;
-  background-color: transparent;
+  background: url(../../images/like-inactive.svg) center no-repeat transparent;
   border: none;
   cursor: pointer;
-  transition: transform .3s linear;
+  transition: transform .4s linear;
 }
 
 .card__like-icon_liked {
@@ -79,28 +67,29 @@
 }
 
 .card__like-icon:hover {
-  transform: scale(1.03);
+  transform: scale(1.2);
 }
 
 .card__like-counter {
   margin: 0;
   font-size: 14px;
   font-weight: 400;
-  line-height: 14px;
+  line-height: 1;
 }
 
 .card__delete-icon {
-  width: 18px;
+  width: 20px;
   height: 20px;
+  margin: 0;
+  padding: 0;
   position: absolute;
-  top: 18px;
-  right: 15px;
-  background: url(../../images/trash-icon.svg) center no-repeat;
-  background-color: transparent;
+  top: 20px;
+  right: 20px;
+  background: url(../../images/trash-icon.svg) center no-repeat transparent;
   border: none;
   cursor: pointer;
   display: none;
-  transition: transform .3s linear;
+  transition: transform .4s linear;
 }
 
 .card:hover .card__delete-icon {
@@ -108,5 +97,5 @@
 }
 
 .card__delete-icon:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }

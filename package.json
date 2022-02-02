@@ -1,6 +1,6 @@
 {
   "name": "mesto_react",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.15.0",
@@ -15,6 +15,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy": "npm run build && scp -r ./build/* andrburl2@62.84.120.84:/home/andrburl2/mesto-react",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
